@@ -10,7 +10,7 @@ namespace osm_diff_analyzer_new_user
 {
   class common_api;
 
-  class new_user_analyzer:public osm_diff_analyzer_if::sax_analyzer_base
+  class new_user_analyzer:public osm_diff_analyzer_sax_if::sax_analyzer_base
   {
   public:
     new_user_analyzer(const std::string & p_name,common_api * p_api);

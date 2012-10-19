@@ -10,7 +10,7 @@ namespace osm_diff_analyzer_new_user
 {
   //------------------------------------------------------------------------------
   new_user_analyzer::new_user_analyzer(const std::string & p_name,common_api * p_api):
-    osm_diff_analyzer_if::sax_analyzer_base("user_analyser",p_name,""),
+    osm_diff_analyzer_sax_if::sax_analyzer_base("user_analyser",p_name,""),
     m_api(p_api),
     m_report("new_user.txt")
   {
