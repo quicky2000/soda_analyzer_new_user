@@ -3,6 +3,7 @@
 
 #include "sax_analyzer_base.h"
 #include "stdint.h"
+#include "new_user_analyzer_description.h"
 #include <map>
 #include <fstream>
 
@@ -20,6 +21,9 @@ namespace osm_diff_analyzer_new_user
     void start_element(const std::string & p_name);
     void get_attribute(const std::string & p_name,const std::string & p_value);
     void end_element(const std::string & p_name);
+    const std::string & get_input_type(void)const;
+    const std::string & get_output_type(void)const;
+    const std::string & get_type(void)const;
     // End of inherited methods
   private:
     //TO DELETE    std::string get_user_inscription_date(const std::string & p_user)const;
@@ -31,6 +35,8 @@ namespace osm_diff_analyzer_new_user
     std::string m_user_name;
     std::map<uint32_t,std::string> m_users;
     std::map<std::string,uint32_t> m_months;
+
+    static new_user_analyzer_description m_description;
   };
 }
 #endif

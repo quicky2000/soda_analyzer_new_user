@@ -114,38 +114,24 @@ namespace osm_diff_analyzer_new_user
     if(p_name == "user") m_user_name = p_value;
   }
 
-  //TO DELETE  //------------------------------------------------------------------------------
-  //TO DELETE  std::string new_user_analyzer::get_user_inscription_date(const std::string & p_user)const
-  //TO DELETE  {
-  //TO DELETE    std::string l_user = p_user;
-  //TO DELETE    std::string l_user_date;
+  //------------------------------------------------------------------------------
+  const std::string & new_user_analyzer::get_input_type(void)const
+  {
+    return m_description.get_input_type();
+  }
 
-  //TO DELETE    std::string l_user_url("http://www.openstreetmap.org/user/");
-  //TO DELETE    url_reader l_url_reader;
-  //TO DELETE    char * l_escaped_user = l_url_reader.escape_string(l_user.c_str());
-  //TO DELETE    l_user_url += l_escaped_user;
-  //TO DELETE    download_buffer l_buffer;
-  //TO DELETE    l_url_reader.read_url(l_user_url.c_str(),l_buffer);
-  //TO DELETE    curl_free(l_escaped_user);
+  //------------------------------------------------------------------------------
+  const std::string & new_user_analyzer::get_output_type(void)const
+  {
+    return m_description.get_output_type();
+  }
 
-  //TO DELETE    std::stringstream l_stream;
-  //TO DELETE    l_stream << l_buffer.get_data();
-  //TO DELETE    std::string l_line;
-  //TO DELETE    bool l_found = false;
-  //TO DELETE    while(!l_found && !getline(l_stream,l_line).eof())
-  //TO DELETE      {
-  //TO DELETE	size_t l_pos ;
-  //TO DELETE	// expecting line like "Mapper since: August 13, 2009"
-  //TO DELETE	if((l_pos = l_line.find("Mapper since:")) != std::string::npos)
-  //TO DELETE	  {
-  //TO DELETE	    size_t l_begin = l_line.find(":",l_pos);
-  //TO DELETE	    l_begin = l_line.find_first_not_of(" ",l_begin+1);
-  //TO DELETE	    l_user_date = l_line.substr(l_begin);
-  //TO DELETE	    l_found = true;
-  //TO DELETE	  }
-  //TO DELETE      }
-  //TO DELETE    assert(l_found);
-  //TO DELETE    return l_user_date;
-  //TO DELETE  }
+  //------------------------------------------------------------------------------
+  const std::string & new_user_analyzer::get_type(void)const
+  {
+    return m_description.get_type();
+  }
+
+  new_user_analyzer_description new_user_analyzer::m_description;
 }
 //EOF
