@@ -26,9 +26,6 @@ namespace osm_diff_analyzer_new_user
     const std::string & get_type(void)const;
     // End of inherited methods
   private:
-    //TO DELETE    std::string get_user_inscription_date(const std::string & p_user)const;
-
-
     common_api * m_api;
     std::ofstream m_report;
     uint32_t m_uid;
