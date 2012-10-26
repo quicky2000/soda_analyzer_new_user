@@ -9,9 +9,9 @@
 namespace osm_diff_analyzer_new_user
 {
   //------------------------------------------------------------------------------
-  new_user_analyzer::new_user_analyzer(const std::string & p_name,common_api * p_api):
-    osm_diff_analyzer_sax_if::sax_analyzer_base("user_analyser",p_name,""),
-    m_api(p_api),
+  new_user_analyzer::new_user_analyzer(const osm_diff_analyzer_if::module_configuration * p_conf,common_api & p_api):
+    osm_diff_analyzer_sax_if::sax_analyzer_base("user_analyser",p_conf->get_name(),""),
+    m_api(&p_api),
     m_report("new_user.txt")
   {
     if(m_report == NULL)
@@ -33,6 +33,7 @@ namespace osm_diff_analyzer_new_user
     m_months.insert(std::map<std::string,uint32_t>::value_type("October",10));
     m_months.insert(std::map<std::string,uint32_t>::value_type("November",11));
     m_months.insert(std::map<std::string,uint32_t>::value_type("December",12));
+    delete p_conf;
   }
 
   //------------------------------------------------------------------------------
