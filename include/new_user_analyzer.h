@@ -6,6 +6,7 @@
 #include "new_user_analyzer_description.h"
 #include <map>
 #include <fstream>
+#include "module_configuration.h"
 
 namespace osm_diff_analyzer_new_user
 {
@@ -17,7 +18,7 @@ namespace osm_diff_analyzer_new_user
     new_user_analyzer(const osm_diff_analyzer_if::module_configuration * p_conf,common_api & p_api);
     ~new_user_analyzer(void);
     // Methods inherited from sax_analyzer_if
-    void init(void);
+    void init(const osm_diff_analyzer_if::osm_diff_state * p_diff_state);
     void start_element(const std::string & p_name);
     void get_attribute(const std::string & p_name,const std::string & p_value);
     void end_element(const std::string & p_name);

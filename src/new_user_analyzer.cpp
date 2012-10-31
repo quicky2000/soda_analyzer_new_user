@@ -33,7 +33,6 @@ namespace osm_diff_analyzer_new_user
     m_months.insert(std::map<std::string,uint32_t>::value_type("October",10));
     m_months.insert(std::map<std::string,uint32_t>::value_type("November",11));
     m_months.insert(std::map<std::string,uint32_t>::value_type("December",12));
-    delete p_conf;
   }
 
   //------------------------------------------------------------------------------
@@ -43,8 +42,9 @@ namespace osm_diff_analyzer_new_user
   }
 
   //------------------------------------------------------------------------------
-  void new_user_analyzer::init(void)
+  void new_user_analyzer::init(const osm_diff_analyzer_if::osm_diff_state * p_diff_state)
   {
+    std::cout << get_name() << " : Starting analyze of diff " << p_diff_state->get_sequence_number() << std::endl ;
   }
 
   //------------------------------------------------------------------------------
@@ -64,7 +64,8 @@ namespace osm_diff_analyzer_new_user
 	if(l_iter == m_users.end())
 	  {
             std::string l_date;
-            m_api->get_user_subscription_date(m_user_name,l_date);
+            m_api->get_user_subscription_date(m_uid,m_user_name,l_date);
+            m_api->cache_user(m_uid,m_user_name,l_date);
 	    m_users.insert(std::map<uint32_t,std::string>::value_type(m_uid,l_date));
 	    std::cout << "==> User \"" << m_user_name << "\"\t\"" << l_date << "\"" << std::endl ;
 	    // Expecting date looking like "August 13, 2009"

@@ -10,7 +10,9 @@ namespace osm_diff_analyzer_new_user
   public:
     inline common_api(osm_diff_analyzer_if::module_library_if::t_register_function p_func);
 
-    inline void get_user_subscription_date(const std::string & p_name,std::string & p_date,
+    inline void get_user_subscription_date(const osm_api_data_types::osm_object::t_osm_id & p_id,
+                                           const std::string & p_name,
+                                           std::string & p_date,
 					   void * p_user_data=NULL); 
 
     inline const osm_api_data_types::osm_node * get_node(const osm_api_data_types::osm_object::t_osm_id & p_id,
@@ -87,6 +89,13 @@ namespace osm_diff_analyzer_new_user
                         std::vector<osm_api_data_types::osm_way*> & p_ways,
                         std::vector<osm_api_data_types::osm_relation*> & p_relations,
                         void *p_user_data=NULL);
+    inline void cache_node(const osm_api_data_types::osm_node & p_node);
+    inline void cache_way(const osm_api_data_types::osm_way & p_way);
+    inline void cache_relation(const osm_api_data_types::osm_relation & p_relation);
+    inline void cache_user(const osm_api_data_types::osm_object::t_osm_id & p_id,
+                           const std::string & p_user_name,
+                           const std::string & p_date);
+
   private:
     osm_diff_analyzer_if::common_api_if::t_get_user_subscription_date m_get_user_subscription_date;
     osm_diff_analyzer_if::common_api_if::t_get_node m_get_node;
@@ -111,6 +120,10 @@ namespace osm_diff_analyzer_new_user
     osm_diff_analyzer_if::common_api_if::t_get_changeset_content m_get_changeset_content;
     osm_diff_analyzer_if::common_api_if::t_get_changesets m_get_changesets;
     osm_diff_analyzer_if::common_api_if::t_get_map m_get_map;
+    osm_diff_analyzer_if::common_api_if::t_cache_node m_cache_node;
+    osm_diff_analyzer_if::common_api_if::t_cache_way m_cache_way;
+    osm_diff_analyzer_if::common_api_if::t_cache_relation m_cache_relation;
+    osm_diff_analyzer_if::common_api_if::t_cache_user m_cache_user;
   };
 
   //---------------------------------------------------------------------------- 
@@ -146,12 +159,19 @@ namespace osm_diff_analyzer_new_user
       m_get_changeset_content = (osm_diff_analyzer_if::common_api_if::t_get_changeset_content)l_api_ptr[osm_diff_analyzer_if::common_api_if::GET_CHANGESET_CONTENT];
       m_get_changesets = (osm_diff_analyzer_if::common_api_if::t_get_changesets)l_api_ptr[osm_diff_analyzer_if::common_api_if::GET_CHANGESETS];
       m_get_map = (osm_diff_analyzer_if::common_api_if::t_get_map)l_api_ptr[osm_diff_analyzer_if::common_api_if::GET_MAP];
-    }
+      m_cache_node = (osm_diff_analyzer_if::common_api_if::t_cache_node)l_api_ptr[osm_diff_analyzer_if::common_api_if::CACHE_NODE]; 
+      m_cache_way = (osm_diff_analyzer_if::common_api_if::t_cache_way)l_api_ptr[osm_diff_analyzer_if::common_api_if::CACHE_WAY]; 
+      m_cache_relation = (osm_diff_analyzer_if::common_api_if::t_cache_relation)l_api_ptr[osm_diff_analyzer_if::common_api_if::CACHE_RELATION]; 
+      m_cache_user = (osm_diff_analyzer_if::common_api_if::t_cache_user)l_api_ptr[osm_diff_analyzer_if::common_api_if::CACHE_USER]; 
+     }
 
   //----------------------------------------------------------------------------
-  void common_api::get_user_subscription_date(const std::string & p_name,std::string & p_date,void * p_user_data)
+  void common_api::get_user_subscription_date(const osm_api_data_types::osm_object::t_osm_id & p_id,
+                                              const std::string & p_name,
+                                              std::string & p_date,
+                                              void * p_user_data)
   {
-    m_get_user_subscription_date(p_name,p_date,p_user_data);
+    m_get_user_subscription_date(p_id,p_name,p_date,p_user_data);
   }
 
   //----------------------------------------------------------------------------
@@ -310,6 +330,29 @@ namespace osm_diff_analyzer_new_user
     return m_get_map(p_bounding_box,p_nodes,p_ways,p_relations,p_user_data);
   }
 
+  //----------------------------------------------------------------------------
+  void common_api::cache_node(const osm_api_data_types::osm_node & p_node)
+  {
+    return m_cache_node(p_node);
+  }
+
+  //----------------------------------------------------------------------------
+  void common_api::cache_way(const osm_api_data_types::osm_way & p_way)
+  {
+    return m_cache_way(p_way);
+  }
+  //----------------------------------------------------------------------------
+  void common_api::cache_relation(const osm_api_data_types::osm_relation & p_relation)
+  {
+    return m_cache_relation(p_relation);
+  }
+  //----------------------------------------------------------------------------
+  void common_api::cache_user(const osm_api_data_types::osm_object::t_osm_id & p_id,
+                                      const std::string & p_user_name,
+                                      const std::string & p_date)
+  {
+    m_cache_user(p_id,p_user_name,p_date);
+  }
 }
 #endif // _COMMON_API_H_
 //EOF
