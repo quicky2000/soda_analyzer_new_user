@@ -114,6 +114,11 @@ namespace osm_diff_analyzer_new_user
     inline void cache_user(const osm_api_data_types::osm_object::t_osm_id & p_id,
                            const std::string & p_user_name,
                            const std::string & p_date);
+    inline const std::vector<osm_api_data_types::osm_change*> * const get_osm_change_file_content(const std::string & p_file_name);
+    inline void get_osm_file_content(const std::string & p_file_name,
+				     std::vector<osm_api_data_types::osm_node*> & p_nodes,
+				     std::vector<osm_api_data_types::osm_way*> & p_ways,
+				     std::vector<osm_api_data_types::osm_relation*> & p_relations);
 
   private:
     osm_diff_analyzer_if::common_api_if::t_get_user_subscription_date m_get_user_subscription_date;
@@ -143,6 +148,8 @@ namespace osm_diff_analyzer_new_user
     osm_diff_analyzer_if::common_api_if::t_cache_way m_cache_way;
     osm_diff_analyzer_if::common_api_if::t_cache_relation m_cache_relation;
     osm_diff_analyzer_if::common_api_if::t_cache_user m_cache_user;
+    osm_diff_analyzer_if::common_api_if::t_get_osm_change_file_content m_get_osm_change_file_content;
+    osm_diff_analyzer_if::common_api_if::t_get_osm_file_content m_get_osm_file_content;
   };
 
   //---------------------------------------------------------------------------- 
@@ -182,6 +189,8 @@ namespace osm_diff_analyzer_new_user
       m_cache_way = (osm_diff_analyzer_if::common_api_if::t_cache_way)l_api_ptr[osm_diff_analyzer_if::common_api_if::CACHE_WAY]; 
       m_cache_relation = (osm_diff_analyzer_if::common_api_if::t_cache_relation)l_api_ptr[osm_diff_analyzer_if::common_api_if::CACHE_RELATION]; 
       m_cache_user = (osm_diff_analyzer_if::common_api_if::t_cache_user)l_api_ptr[osm_diff_analyzer_if::common_api_if::CACHE_USER]; 
+      m_get_osm_change_file_content = (osm_diff_analyzer_if::common_api_if::t_get_osm_change_file_content)l_api_ptr[osm_diff_analyzer_if::common_api_if::GET_OSM_CHANGE_FILE_CONTENT]; 
+      m_get_osm_file_content = (osm_diff_analyzer_if::common_api_if::t_get_osm_file_content)l_api_ptr[osm_diff_analyzer_if::common_api_if::GET_OSM_FILE_CONTENT]; 
      }
 
   //----------------------------------------------------------------------------
@@ -372,6 +381,23 @@ namespace osm_diff_analyzer_new_user
   {
     m_cache_user(p_id,p_user_name,p_date);
   }
+  //----------------------------------------------------------------------------
+  const std::vector<osm_api_data_types::osm_change*> * const common_api::get_osm_change_file_content(const std::string & p_file_name)
+    {
+      return m_get_osm_change_file_content(p_file_name);
+    }
+  //----------------------------------------------------------------------------
+  void common_api::get_osm_file_content(const std::string & p_file_name,
+						    std::vector<osm_api_data_types::osm_node*> & p_nodes,
+						    std::vector<osm_api_data_types::osm_way*> & p_ways,
+						    std::vector<osm_api_data_types::osm_relation*> & p_relations)
+  {
+    m_get_osm_file_content(p_file_name,
+			   p_nodes,
+			   p_ways,
+			   p_relations);
+  }
+
 }
 #endif // _COMMON_API_H_
 //EOF
