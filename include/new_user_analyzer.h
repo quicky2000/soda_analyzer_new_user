@@ -26,6 +26,7 @@
 #include <map>
 #include <fstream>
 #include "module_configuration.h"
+#include "osm_api_data_types.h"
 
 namespace osm_diff_analyzer_new_user
 {
@@ -48,8 +49,9 @@ namespace osm_diff_analyzer_new_user
   private:
     common_api * m_api;
     std::ofstream m_report;
-    uint32_t m_uid;
+    osm_api_data_types::osm_object::t_osm_id m_uid;
     std::string m_user_name;
+    osm_api_data_types::osm_object::t_osm_id m_changeset;
     std::map<uint32_t,std::string> m_users;
     std::map<std::string,uint32_t> m_months;
 
