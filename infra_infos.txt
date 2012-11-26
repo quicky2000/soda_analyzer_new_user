@@ -1,4 +1,4 @@
 depend:osm_diff_analyzer_sax_if
-CFLAGS:-Wall -g
+CFLAGS:-Wall -g -ansi -pedantic
 LDFLAGS:
 

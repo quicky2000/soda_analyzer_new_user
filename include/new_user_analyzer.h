@@ -21,12 +21,12 @@
 #define _NEW_USER_ANALYZER_H_
 
 #include "sax_analyzer_base.h"
-#include "stdint.h"
 #include "new_user_analyzer_description.h"
-#include <map>
-#include <fstream>
 #include "module_configuration.h"
 #include "osm_api_data_types.h"
+#include <inttypes.h>
+#include <map>
+#include <fstream>
 
 namespace osm_diff_analyzer_new_user
 {
