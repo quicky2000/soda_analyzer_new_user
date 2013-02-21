@@ -18,7 +18,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>
 */
 #include "new_user_analyzer.h"
-#include "common_api.h"
+#include "new_user_common_api.h"
+#include "quicky_exception.h"
 #include <cstdlib>
 #include <iostream>
 #include <sstream>
@@ -28,19 +29,25 @@
 namespace osm_diff_analyzer_new_user
 {
   //------------------------------------------------------------------------------
-  new_user_analyzer::new_user_analyzer(const osm_diff_analyzer_if::module_configuration * p_conf,common_api & p_api):
+  new_user_analyzer::new_user_analyzer(const osm_diff_analyzer_if::module_configuration * p_conf,new_user_common_api & p_api):
     osm_diff_analyzer_sax_if::sax_analyzer_base("user_analyser",p_conf->get_name(),""),
-    m_api(&p_api),
-    m_report("new_user.txt"),
+    m_api(p_api),
+    m_report("new_user.html"),
     m_user_name(""),
     m_changeset(0)
   {
-    if(m_report == NULL)
+    // Register module to be able to use User Interface
+    m_api.ui_register_module(*this,get_name());
+
+    if(!m_report.is_open())
       {
-	std::cout << "Error when trying to open file \"new_user.txt\"" << std::endl ;
-	exit(EXIT_FAILURE);
+        throw quicky_exception::quicky_runtime_exception("Error when trying to open file \"new_user.txt\"",__LINE__,__FILE__);
       }
-    m_report << "Contributors since less than one month : "  << std::endl ;
+    m_report << "<html>" << std::endl ;
+    m_report << "\t<head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">" << std::endl ;
+    m_report << "\t\t<title>New user report</title>" << std::endl ;
+    m_report << "\t</head>" << std::endl ;
+    m_report << "\t<body><H1>Contributors since less than one month</H1>" << std::endl ;
 
     m_months.insert(std::map<std::string,uint32_t>::value_type("January",1));
     m_months.insert(std::map<std::string,uint32_t>::value_type("February",2));
@@ -54,11 +61,15 @@ namespace osm_diff_analyzer_new_user
     m_months.insert(std::map<std::string,uint32_t>::value_type("October",10));
     m_months.insert(std::map<std::string,uint32_t>::value_type("November",11));
     m_months.insert(std::map<std::string,uint32_t>::value_type("December",12));
+
+    m_api.ui_declare_html_report(*this,"new_user.html");
   }
 
   //------------------------------------------------------------------------------
   new_user_analyzer::~new_user_analyzer(void)
   {
+    m_report << "</body>" << std::endl ;    
+    m_report << "</html>" << std::endl ;        
     m_report.close();
   }
 
@@ -85,10 +96,16 @@ namespace osm_diff_analyzer_new_user
 	if(l_iter == m_users.end())
 	  {
             std::string l_date;
-            m_api->get_user_subscription_date(m_uid,m_user_name,l_date);
-            m_api->cache_user(m_uid,m_user_name,m_changeset,l_date);
+            m_api.get_user_subscription_date(m_uid,m_user_name,l_date);
+            m_api.cache(m_uid,m_user_name,m_changeset,l_date);
 	    m_users.insert(std::map<uint32_t,std::string>::value_type(m_uid,l_date));
-	    std::cout << "==> User \"" << m_user_name << "\"\t\"" << l_date << "\"" << std::endl ;
+
+            {
+              std::stringstream l_stream;
+              l_stream << "==> User \"" << m_user_name << "\"\t\"" << l_date << "\"";
+              m_api.ui_append_log_text(*this,l_stream.str());
+            }
+
 	    if(l_date != "")
 	      {
 		// Expecting date looking like "August 13, 2009"
@@ -98,12 +115,21 @@ namespace osm_diff_analyzer_new_user
 		std::string l_day_str = l_date.substr(l_first_space+1,l_comma-l_first_space-1);
 		std::string l_year_str = l_date.substr(l_comma+1);
 #ifdef DEBUG_NEW_USER_ANALYZER
-		std::cout << "Day = \"" << l_day_str << "\"" << std::endl ;
-		std::cout << "Month = \"" << l_month_str << "\"" << std::endl ;
-		std::cout << "Year = \"" << l_year_str << "\"" << std::endl ;
+                {
+                  std::stringstream l_stream;
+                  l_stream << "Day = \"" << l_day_str << "\"" << std::endl ;
+                  l_stream << "Month = \"" << l_month_str << "\"" << std::endl ;
+                  l_stream << "Year = \"" << l_year_str << "\"" ;
+                  m_api.ui_append_log_text(*this,l_stream.str());
+                }
 #endif
 		std::map<std::string,uint32_t>::const_iterator l_iter_month = m_months.find(l_month_str);
-		assert(m_months.end() != l_iter_month);
+		if(m_months.end() == l_iter_month)
+                  {
+                    std::stringstream l_stream;
+                    l_stream << "new_user_analyzer : Unable to determine index of month \"" << l_month_str << "\"";
+                    throw quicky_exception::quicky_logic_exception(l_stream.str(),__LINE__,__FILE__);
+                  }
     
 		uint32_t l_inscription_day = atoi(l_day_str.c_str());   
 		uint32_t l_inscription_month  = l_iter_month->second  ;
@@ -123,10 +149,18 @@ namespace osm_diff_analyzer_new_user
 
 		time_t l_duration_time = (time_t)difftime(l_today, l_inscription_date);
 		struct tm * l_duration = localtime(&l_duration_time);
-		std::cout << (l_duration->tm_year - 70 ) << " year " << (l_duration->tm_mon ) << " months " << l_duration->tm_mday << " days" << std::endl ;
-		if((l_duration->tm_year - 70 )== 0 && l_duration->tm_mon == 0)
+
+                {
+                  std::stringstream l_stream;
+                  l_stream << (l_duration->tm_year - 70 ) << " year " << (l_duration->tm_mon ) << " months " << l_duration->tm_mday << " days" ;
+                   m_api.ui_append_log_text(*this,l_stream.str());
+                }
+
+		if((l_duration->tm_year - 70 )== 0 && l_duration->tm_mon < 4)
 		  {
-		    m_report << "\"" << m_user_name << "\" : " << l_date << std::endl ;
+                    std::string l_user_url;
+                    m_api.get_user_browse_url(l_user_url,m_uid,m_user_name);
+                    m_report << "<A HREF=\"" << l_user_url << "\">" << m_user_name << "</A> : " << l_date << "<BR>" << std::endl ;
 		  } 
 	      }
 	  }

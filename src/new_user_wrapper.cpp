@@ -20,7 +20,7 @@
 #include "new_user_wrapper.h"
 #include "new_user_analyzer_description.h"
 #include "new_user_analyzer.h"
-#include "common_api.h"
+#include "new_user_common_api.h"
 
 #include <cassert>
 #include <iostream>
@@ -54,7 +54,7 @@ namespace osm_diff_analyzer_new_user
   //----------------------------------------------------------------------------
   void new_user_wrapper::require_common_api(osm_diff_analyzer_if::module_library_if::t_register_function p_func)
   {
-    m_common_api = new common_api(p_func);
+    m_common_api = new new_user_common_api(p_func);
   }
 
   //----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ namespace osm_diff_analyzer_new_user
   {
     delete m_common_api;
   }
-  common_api * new_user_wrapper::m_common_api = NULL;
+  new_user_common_api * new_user_wrapper::m_common_api = NULL;
 
   extern "C"
   {

@@ -27,7 +27,7 @@
 
 namespace osm_diff_analyzer_new_user
 {
-  class common_api;
+  class new_user_common_api;
 
   class new_user_wrapper
   {
@@ -39,7 +39,7 @@ namespace osm_diff_analyzer_new_user
     static void require_common_api(osm_diff_analyzer_if::module_library_if::t_register_function);
     static void cleanup(void);
   private:
-    static common_api *m_common_api;
+    static new_user_common_api *m_common_api;
   };
 
 }
