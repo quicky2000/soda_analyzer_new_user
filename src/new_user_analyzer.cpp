@@ -76,7 +76,9 @@ namespace osm_diff_analyzer_new_user
   //------------------------------------------------------------------------------
   void new_user_analyzer::init(const osm_diff_analyzer_if::osm_diff_state * p_diff_state)
   {
-    std::cout << get_name() << " : Starting analyze of diff " << p_diff_state->get_sequence_number() << std::endl ;
+    std::stringstream l_stream;
+    l_stream << "Starting analyze of diff " << p_diff_state->get_sequence_number();
+    m_api.ui_append_log_text(*this,l_stream.str());
   }
 
   //------------------------------------------------------------------------------
