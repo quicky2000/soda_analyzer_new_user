@@ -69,7 +69,9 @@ namespace osm_diff_analyzer_new_user
     void register_module(uintptr_t* p_api,uint32_t p_api_size)
     {
       assert(p_api_size == MODULE_LIBRARY_IF_API_SIZE);
+#ifdef DEBUG
       std::cout << "Registration of new_user analyzer API " << std::endl ;
+#endif
       p_api[osm_diff_analyzer_if::module_library_if::GET_API_VERSION] = (uintptr_t)new_user_wrapper::get_api_version;
       p_api[osm_diff_analyzer_if::module_library_if::GET_API_SIZE] = (uintptr_t)new_user_wrapper::get_api_size;
       p_api[osm_diff_analyzer_if::module_library_if::GET_DESCRIPTION] = (uintptr_t)new_user_wrapper::get_new_user_description;
