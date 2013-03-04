@@ -158,7 +158,7 @@ namespace osm_diff_analyzer_new_user
                    m_api.ui_append_log_text(*this,l_stream.str());
                 }
 
-		if((l_duration->tm_year - 70 )== 0 && l_duration->tm_mon < 4)
+		if((l_duration->tm_year - 70 )== 0 && l_duration->tm_mon < 1)
 		  {
                     std::string l_user_url;
                     m_api.get_user_browse_url(l_user_url,m_uid,m_user_name);
